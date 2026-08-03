@@ -1,7 +1,12 @@
 package com.odwambombo.fraudruleengine;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 
 @SpringBootTest(properties = {
         "spring.datasource.url="
@@ -13,8 +18,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 })
 class FraudRuleEngineApplicationTests {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Test
-    void contextLoads() {
+    void applicationContextLoadsWithoutCreatingAwsSecretsManagerClients() {
+        assertThat(applicationContext.getEnvironment()
+                .getProperty("spring.cloud.aws.secretsmanager.enabled", Boolean.class))
+                .isFalse();
+        assertThat(applicationContext.getBeansOfType(SecretsManagerClient.class)).isEmpty();
     }
 
 }

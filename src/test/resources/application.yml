@@ -1,4 +1,10 @@
 spring:
+  # Keep the test suite hermetic: the Secrets Manager starter otherwise creates
+  # an AWS client eagerly and resolves a region even when no secret is imported.
+  cloud:
+    aws:
+      secretsmanager:
+        enabled: false
   datasource:
     url: jdbc:h2:mem:fraud_rule_engine;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
     username: sa
