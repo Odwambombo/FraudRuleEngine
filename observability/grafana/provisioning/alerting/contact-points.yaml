@@ -1,0 +1,16 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: fraud-rule-engine-webhook
+    receivers:
+      - uid: fraud_rule_engine_webhook
+        type: webhook
+        disableResolveMessage: false
+        settings:
+          url: $GRAFANA_ALERT_WEBHOOK_URL
+          httpMethod: POST
+          maxAlerts: "20"
+          authorization_scheme: $GRAFANA_ALERT_WEBHOOK_AUTH_SCHEME
+        secureSettings:
+          authorization_credentials: $GRAFANA_ALERT_WEBHOOK_AUTH_CREDENTIALS

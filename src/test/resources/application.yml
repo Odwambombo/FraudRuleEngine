@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:fraud_rule_engine;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.sql
+
+springdoc:
+  api-docs:
+    enabled: false
+
+fraud:
+  security:
+    enabled: false
+
+management:
+  opentelemetry:
+    enabled: false
+  tracing:
+    export:
+      otlp:
+        enabled: false
+  otlp:
+    metrics:
+      export:
+        enabled: false
+  logging:
+    export:
+      otlp:
+        enabled: false
