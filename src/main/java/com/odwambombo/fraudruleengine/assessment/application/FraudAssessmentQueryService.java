@@ -10,6 +10,7 @@ import com.odwambombo.fraudruleengine.shared.exception.ResourceNotFoundException
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class FraudAssessmentQueryService {
         this.assessmentRepository = assessmentRepository;
     }
 
+    @Cacheable(cacheNames = "fraudAssessmentsById", sync = true)
     public FraudAssessment getById(UUID assessmentId) {
         return assessmentRepository.findDetailedById(assessmentId)
                 .map(FraudAssessmentMapper::toFraudAssessment)
