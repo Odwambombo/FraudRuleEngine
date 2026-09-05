@@ -4,11 +4,15 @@ import java.util.Arrays;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
+@Getter
+@Setter
 @Component
 @ConfigurationProperties(prefix = "fraud.security")
 @Validated
@@ -21,42 +25,6 @@ public class FraudSecurityProperties {
 
     @Valid
     private final Scopes scopes = new Scopes();
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Provider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Provider provider) {
-        this.provider = provider;
-    }
-
-    public String getIssuerUri() {
-        return issuerUri;
-    }
-
-    public void setIssuerUri(String issuerUri) {
-        this.issuerUri = issuerUri;
-    }
-
-    public String getAudience() {
-        return audience;
-    }
-
-    public void setAudience(String audience) {
-        this.audience = audience;
-    }
-
-    public Scopes getScopes() {
-        return scopes;
-    }
 
     public enum Provider {
         LOCAL,
@@ -97,6 +65,8 @@ public class FraudSecurityProperties {
         return configuredScope == null ? "" : configuredScope.trim();
     }
 
+    @Getter
+    @Setter
     public static class Scopes {
 
         private String transactionWrite;
@@ -107,36 +77,5 @@ public class FraudSecurityProperties {
 
         private String docsRead;
 
-        public String getTransactionWrite() {
-            return transactionWrite;
-        }
-
-        public void setTransactionWrite(String transactionWrite) {
-            this.transactionWrite = transactionWrite;
-        }
-
-        public String getAssessmentRead() {
-            return assessmentRead;
-        }
-
-        public void setAssessmentRead(String assessmentRead) {
-            this.assessmentRead = assessmentRead;
-        }
-
-        public String getOperationsRead() {
-            return operationsRead;
-        }
-
-        public void setOperationsRead(String operationsRead) {
-            this.operationsRead = operationsRead;
-        }
-
-        public String getDocsRead() {
-            return docsRead;
-        }
-
-        public void setDocsRead(String docsRead) {
-            this.docsRead = docsRead;
-        }
     }
 }

@@ -2,11 +2,7 @@ package com.odwambombo.fraudruleengine.rule.domain;
 
 import java.util.Objects;
 
-public record FraudRuleResult(
-        String ruleCode,
-        boolean matched,
-        int score,
-        String reason) {
+public record FraudRuleResult(String ruleCode, boolean matched, int score, String reason) {
 
     public FraudRuleResult {
         Objects.requireNonNull(ruleCode, "ruleCode must not be null");

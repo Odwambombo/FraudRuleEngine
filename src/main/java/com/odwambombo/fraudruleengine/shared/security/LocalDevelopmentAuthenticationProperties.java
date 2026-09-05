@@ -12,12 +12,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /** Local-only credentials and token settings. This configuration is never loaded by hosted profiles. */
 @ConfigurationProperties(prefix = "fraud.security.local-auth")
 @Validated
+@Getter
+@Setter
 class LocalDevelopmentAuthenticationProperties {
 
     private static final Duration MINIMUM_TOKEN_TTL = Duration.ofMinutes(1);
@@ -32,26 +36,6 @@ class LocalDevelopmentAuthenticationProperties {
     @Valid
     @NotEmpty
     private List<User> users = List.of();
-
-    public String getSigningKey() {
-        return signingKey;
-    }
-
-    public void setSigningKey(String signingKey) {
-        this.signingKey = signingKey;
-    }
-
-    public Duration getTokenTtl() {
-        return tokenTtl;
-    }
-
-    public void setTokenTtl(Duration tokenTtl) {
-        this.tokenTtl = tokenTtl;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
 
     public void setUsers(List<User> users) {
         this.users = List.copyOf(users);
@@ -78,6 +62,8 @@ class LocalDevelopmentAuthenticationProperties {
                 .allMatch(usernames::add);
     }
 
+    @Getter
+    @Setter
     static class User {
 
         @NotBlank
@@ -93,36 +79,5 @@ class LocalDevelopmentAuthenticationProperties {
         @NotEmpty
         private List<@NotNull FraudPermission> permissions = List.of();
 
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public List<FraudRole> getRoles() {
-            return roles;
-        }
-
-        public void setRoles(List<FraudRole> roles) {
-            this.roles = List.copyOf(roles);
-        }
-
-        public List<FraudPermission> getPermissions() {
-            return permissions;
-        }
-
-        public void setPermissions(List<FraudPermission> permissions) {
-            this.permissions = List.copyOf(permissions);
-        }
     }
 }

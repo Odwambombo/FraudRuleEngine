@@ -9,10 +9,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(
         name = "fraud_rule_result",
@@ -76,22 +80,6 @@ public class FraudRuleResultEntity {
                 score,
                 reason
         );
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getRuleCode() {
-        return ruleCode;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
     private static int requireNonNegative(int value) {

@@ -19,11 +19,7 @@ public class RiskScoringService {
 
     public RiskDecision score(Collection<FraudRuleResult> ruleResults) {
         final int riskScore = calculateRiskScore(ruleResults);
-        return new RiskDecision(
-                riskScore,
-                determineRiskLevel(riskScore),
-                isFlagged(riskScore)
-        );
+        return new RiskDecision(riskScore, determineRiskLevel(riskScore), isFlagged(riskScore));
     }
 
     public int calculateRiskScore(Collection<FraudRuleResult> ruleResults) {

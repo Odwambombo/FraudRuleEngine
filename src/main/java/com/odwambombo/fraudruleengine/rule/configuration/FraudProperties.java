@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +21,8 @@ import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Component
 @ConfigurationProperties(prefix = "fraud")
 @Validated
@@ -29,14 +33,8 @@ public class FraudProperties {
     @Valid
     private final Rules rules = new Rules();
 
-    public Risk getRisk() {
-        return risk;
-    }
-
-    public Rules getRules() {
-        return rules;
-    }
-
+    @Getter
+    @Setter
     public static class Risk {
 
         @Min(0)
@@ -48,44 +46,14 @@ public class FraudProperties {
         @Min(0)
         private int flagThreshold = 60;
 
-        public int getMediumThreshold() {
-            return mediumThreshold;
-        }
-
-        public void setMediumThreshold(int mediumThreshold) {
-            this.mediumThreshold = mediumThreshold;
-        }
-
-        public int getHighThreshold() {
-            return highThreshold;
-        }
-
-        public void setHighThreshold(int highThreshold) {
-            this.highThreshold = highThreshold;
-        }
-
-        public int getCriticalThreshold() {
-            return criticalThreshold;
-        }
-
-        public void setCriticalThreshold(int criticalThreshold) {
-            this.criticalThreshold = criticalThreshold;
-        }
-
-        public int getFlagThreshold() {
-            return flagThreshold;
-        }
-
-        public void setFlagThreshold(int flagThreshold) {
-            this.flagThreshold = flagThreshold;
-        }
-
         @AssertTrue(message = "risk thresholds must increase from medium to high to critical")
         public boolean isThresholdOrderValid() {
             return mediumThreshold < highThreshold && highThreshold < criticalThreshold;
         }
     }
 
+    @Getter
+    @Setter
     public static class Rules {
 
         @Valid
@@ -99,27 +67,10 @@ public class FraudProperties {
         @Valid
         private final Velocity velocity = new Velocity();
 
-        public HighValue getHighValue() {
-            return highValue;
-        }
-
-        public UnusualTime getUnusualTime() {
-            return unusualTime;
-        }
-
-        public RiskyCategory getRiskyCategory() {
-            return riskyCategory;
-        }
-
-        public ForeignTransaction getForeignTransaction() {
-            return foreignTransaction;
-        }
-
-        public Velocity getVelocity() {
-            return velocity;
-        }
     }
 
+    @Getter
+    @Setter
     public static class HighValue {
 
         private boolean enabled = true;
@@ -132,39 +83,10 @@ public class FraudProperties {
         @Positive
         private int score = 40;
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public BigDecimal getThreshold() {
-            return threshold;
-        }
-
-        public void setThreshold(BigDecimal threshold) {
-            this.threshold = threshold;
-        }
-
-        public String getCurrency() {
-            return currency;
-        }
-
-        public void setCurrency(String currency) {
-            this.currency = currency;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
     }
 
+    @Getter
+    @Setter
     public static class UnusualTime {
 
         private boolean enabled = true;
@@ -175,103 +97,36 @@ public class FraudProperties {
         @Positive
         private int score = 20;
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public LocalTime getStartInclusive() {
-            return startInclusive;
-        }
-
-        public void setStartInclusive(LocalTime startInclusive) {
-            this.startInclusive = startInclusive;
-        }
-
-        public LocalTime getEndExclusive() {
-            return endExclusive;
-        }
-
-        public void setEndExclusive(LocalTime endExclusive) {
-            this.endExclusive = endExclusive;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
-
         @AssertTrue(message = "unusual-time start and end must be different")
         public boolean isWindowValid() {
-            return startInclusive != null
-                    && endExclusive != null
-                    && !startInclusive.equals(endExclusive);
+            return startInclusive != null && endExclusive != null && !startInclusive.equals(endExclusive);
         }
     }
 
+    @Getter
+    @Setter
     public static class RiskyCategory {
 
         private boolean enabled = true;
         @NotEmpty
-        private Set<@NotBlank String> categories =
-                new LinkedHashSet<>(Set.of("GAMBLING", "CRYPTOCURRENCY"));
+        private Set<@NotBlank String> categories = new LinkedHashSet<>(Set.of("GAMBLING", "CRYPTOCURRENCY"));
         @Positive
         private int score = 15;
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public Set<String> getCategories() {
-            return categories;
-        }
-
-        public void setCategories(Set<String> categories) {
-            this.categories = categories;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
     }
 
+    @Getter
+    @Setter
     public static class ForeignTransaction {
 
         private boolean enabled = true;
         @Positive
         private int score = 25;
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
     }
 
+    @Getter
+    @Setter
     public static class Velocity {
 
         private boolean enabled = true;
@@ -281,38 +136,6 @@ public class FraudProperties {
         private Duration window = Duration.ofMinutes(10);
         @Positive
         private int score = 35;
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public int getMinimumTransactionCount() {
-            return minimumTransactionCount;
-        }
-
-        public void setMinimumTransactionCount(int minimumTransactionCount) {
-            this.minimumTransactionCount = minimumTransactionCount;
-        }
-
-        public Duration getWindow() {
-            return window;
-        }
-
-        public void setWindow(Duration window) {
-            this.window = window;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public void setScore(int score) {
-            this.score = score;
-        }
 
         @AssertTrue(message = "velocity window must be positive")
         public boolean isWindowValid() {

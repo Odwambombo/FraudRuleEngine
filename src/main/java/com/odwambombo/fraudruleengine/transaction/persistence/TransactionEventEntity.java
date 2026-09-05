@@ -9,6 +9,8 @@ import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Persistable;
 
 import java.math.BigDecimal;
@@ -17,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
+@Setter
 @Entity
 @Table(
         name = "transaction_event",
@@ -157,54 +161,6 @@ public class TransactionEventEntity implements Persistable<UUID> {
     @Override
     public boolean isNew() {
         return newEntity;
-    }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public String getMerchant() {
-        return merchant;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getCustomerCountry() {
-        return customerCountry;
-    }
-
-    public LocalDateTime getTransactionTime() {
-        return transactionTime;
-    }
-
-    public Instant getReceivedAt() {
-        return receivedAt;
     }
 
     @PostLoad

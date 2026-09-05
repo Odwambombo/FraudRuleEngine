@@ -88,10 +88,7 @@ class PostgreSqlPersistenceIntegrationTest {
 
     @Test
     void liquibaseSchemaPersistsAndLoadsTheAssessmentAggregate() {
-        Integer appliedChangeSets = jdbcTemplate.queryForObject(
-                "select count(*) from databasechangelog",
-                Integer.class
-        );
+        Integer appliedChangeSets = jdbcTemplate.queryForObject("select count(*) from databasechangelog", Integer.class);
         assertTrue(appliedChangeSets != null && appliedChangeSets >= 3);
 
         TransactionEventEntity transaction = transactionEventRepository.saveAndFlush(

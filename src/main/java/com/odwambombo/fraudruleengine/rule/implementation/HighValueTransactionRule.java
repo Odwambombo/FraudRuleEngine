@@ -29,10 +29,7 @@ public class HighValueTransactionRule implements FraudRule {
         Objects.requireNonNull(transactionEvent, "transactionEvent must not be null");
 
         final FraudProperties.HighValue configuration = fraudProperties.getRules().getHighValue();
-        final boolean currencyMatches = currenciesMatch(
-                transactionEvent.currency(),
-                configuration.getCurrency()
-        );
+        final boolean currencyMatches = currenciesMatch(transactionEvent.currency(), configuration.getCurrency());
         final BigDecimal transactionAmount = transactionEvent.amount();
         final boolean matched = currencyMatches
                 && transactionAmount != null

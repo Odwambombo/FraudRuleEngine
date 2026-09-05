@@ -23,9 +23,7 @@ public class FraudRuleEngine {
         this.fraudRules = fraudRules.stream().sorted(RULE_ORDER).toList();
     }
 
-    public List<FraudRuleResult> evaluate(
-            TransactionEvent transactionEvent,
-            FraudContext fraudContext) {
+    public List<FraudRuleResult> evaluate(TransactionEvent transactionEvent, FraudContext fraudContext) {
         Objects.requireNonNull(transactionEvent, "transactionEvent must not be null");
         Objects.requireNonNull(fraudContext, "fraudContext must not be null");
 

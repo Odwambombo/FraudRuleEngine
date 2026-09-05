@@ -23,19 +23,12 @@ public class UnusualTransactionTimeRule implements FraudRule {
     }
 
     @Override
-    public FraudRuleResult evaluate(
-            TransactionEvent transactionEvent,
-            FraudContext fraudContext) {
+    public FraudRuleResult evaluate(TransactionEvent transactionEvent, FraudContext fraudContext) {
         Objects.requireNonNull(transactionEvent, "transactionEvent must not be null");
 
-        final FraudProperties.UnusualTime configuration = fraudProperties
-                .getRules()
-                .getUnusualTime();
-        final LocalTime transactionTime = transactionEvent.transactionTime() == null
-                ? null
-                : transactionEvent.transactionTime().toLocalTime();
-        final boolean matched = transactionTime != null
-                && isTimeWithinHalfOpenWindow(
+        final FraudProperties.UnusualTime configuration = fraudProperties.getRules().getUnusualTime();
+        final LocalTime transactionTime = transactionEvent.transactionTime() == null ? null : transactionEvent.transactionTime().toLocalTime();
+        final boolean matched = transactionTime != null && isTimeWithinHalfOpenWindow(
                         transactionTime,
                         configuration.getStartInclusive(),
                         configuration.getEndExclusive()

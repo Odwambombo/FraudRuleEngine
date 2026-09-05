@@ -37,6 +37,7 @@ public class TransactionAssessmentProcessor {
     private final FraudProperties fraudProperties;
     private final Clock clock;
 
+
     public TransactionAssessmentProcessor(
             TransactionEventRepository transactionRepository,
             FraudAssessmentRepository assessmentRepository,
@@ -78,20 +79,13 @@ public class TransactionAssessmentProcessor {
         );
     }
 
-    private ProcessTransactionResult assessNewTransaction(
-            ProcessTransactionCommand transactionCommand) {
+    private ProcessTransactionResult assessNewTransaction(ProcessTransactionCommand transactionCommand) {
         final Instant evaluatedAt = clock.instant();
         final TransactionEvent transactionEvent = toTransactionEvent(transactionCommand);
         final FraudContext fraudContext = loadFraudContext(transactionEvent);
-        final List<FraudRuleResult> matchedRules = ruleEngine.evaluate(
-                transactionEvent,
-                fraudContext
-        );
+        final List<FraudRuleResult> matchedRules = ruleEngine.evaluate(transactionEvent, fraudContext);
         final RiskDecision decision = riskScoringService.score(matchedRules);
-        final TransactionEventEntity eventEntity = toTransactionEventEntity(
-                transactionEvent,
-                evaluatedAt
-        );
+        final TransactionEventEntity eventEntity = toTransactionEventEntity(transactionEvent, evaluatedAt);
         final TransactionEventEntity transactionEntity = transactionRepository.save(eventEntity);
 
         final FraudAssessmentEntity assessmentEntity = FraudAssessmentEntity.create(

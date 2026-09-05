@@ -157,8 +157,7 @@ class FraudRuleEngineApiTest {
                 "cust-concurrent",
                 "25000.00",
                 "ELECTRONICS",
-                "2026-07-27T02:15:00"
-        );
+                "2026-07-27T02:15:00");
         final CountDownLatch ready = new CountDownLatch(2);
         final CountDownLatch start = new CountDownLatch(1);
         final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -220,23 +219,11 @@ class FraudRuleEngineApiTest {
                 original.replace("\"amount\": 100.00", "\"amount\": 101.00"),
                 original.replace("\"currency\": \"ZAR\"", "\"currency\": \"USD\""),
                 original.replace("\"category\": \"GROCERIES\"", "\"category\": \"FUEL\""),
-                original.replace(
-                        "\"transactionType\": \"CARD_PURCHASE\"",
-                        "\"transactionType\": \"TRANSFER\""
-                ),
-                original.replace(
-                        "\"merchant\": \"Grocery Store\"",
-                        "\"merchant\": \"Other Store\""
-                ),
+                original.replace("\"transactionType\": \"CARD_PURCHASE\"", "\"transactionType\": \"TRANSFER\""),
+                original.replace("\"merchant\": \"Grocery Store\"", "\"merchant\": \"Other Store\""),
                 original.replace("\"country\": \"ZA\",", "\"country\": \"US\","),
-                original.replace(
-                        "\"customerCountry\": \"ZA\"",
-                        "\"customerCountry\": \"US\""
-                ),
-                original.replace(
-                        "\"transactionTime\": \"2026-07-27T12:00:00\"",
-                        "\"transactionTime\": \"2026-07-27T12:00:01\""
-                )
+                original.replace("\"customerCountry\": \"ZA\"", "\"customerCountry\": \"US\""),
+                original.replace("\"transactionTime\": \"2026-07-27T12:00:00\"", "\"transactionTime\": \"2026-07-27T12:00:01\"")
         );
 
         for (String changedPayload : changedPayloads) {
@@ -382,8 +369,7 @@ class FraudRuleEngineApiTest {
                 .andExpect(jsonPath("$.message").value("The transaction event is invalid."))
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.errors.eventId").exists())
-                .andExpect(jsonPath("$.errors.transactionId")
-                        .value(ApiIdentifier.DEFAULT_MESSAGE))
+                .andExpect(jsonPath("$.errors.transactionId").value(ApiIdentifier.DEFAULT_MESSAGE))
                 .andExpect(jsonPath("$.errors.amount").exists())
                 .andExpect(jsonPath("$.errors.currency").exists());
 
@@ -412,13 +398,10 @@ class FraudRuleEngineApiTest {
 
     @Test
     void sqlInjectionShapedIdentifierInputsAreRejectedBeforeQueryExecution() throws Exception {
-        mockMvc.perform(get("/api/v1/fraud-assessments")
-                        .queryParam("customerId", "cust-safe' OR '1'='1'--"))
+        mockMvc.perform(get("/api/v1/fraud-assessments").queryParam("customerId", "cust-safe' OR '1'='1'--"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
-                .andExpect(jsonPath("$.message").value(
-                        "The request contains an invalid value."
-                ))
+                .andExpect(jsonPath("$.message").value("The request contains an invalid value."))
                 .andExpect(jsonPath("$.timestamp").exists());
 
         mockMvc.perform(get(
@@ -427,9 +410,7 @@ class FraudRuleEngineApiTest {
                 ))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("INVALID_REQUEST"))
-                .andExpect(jsonPath("$.message").value(
-                        "The request contains an invalid value."
-                ))
+                .andExpect(jsonPath("$.message").value("The request contains an invalid value."))
                 .andExpect(jsonPath("$.timestamp").exists());
 
         assertEquals(0L, transactionRepository.count());
@@ -445,8 +426,7 @@ class FraudRuleEngineApiTest {
                 "cust-merchant-text",
                 "100.00",
                 "GROCERIES",
-                "2026-07-27T12:00:00"
-        ).replace("Tech World", merchant);
+                "2026-07-27T12:00:00").replace("Tech World", merchant);
 
         final MvcResult created = mockMvc.perform(post("/api/v1/transaction-events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -518,10 +498,7 @@ class FraudRuleEngineApiTest {
                 .andExpect(jsonPath("$.matchedRules[1].score").value(20))
                 .andExpect(jsonPath("$.matchedRules[1].reason").isNotEmpty());
 
-        mockMvc.perform(get(
-                        "/api/v1/fraud-assessments/transaction/{transactionId}",
-                        "txn-retrieve"
-                ))
+        mockMvc.perform(get("/api/v1/fraud-assessments/transaction/{transactionId}", "txn-retrieve"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.assessmentId").value(assessmentId))
                 .andExpect(jsonPath("$.eventId").value("evt-retrieve"))
@@ -537,12 +514,8 @@ class FraudRuleEngineApiTest {
                 "cust-safe",
                 "100.00",
                 "GROCERIES",
-                "2026-07-27T12:00:00"
-        ));
-        final String assessmentId = JsonPath.read(
-                created.getResponse().getContentAsString(),
-                "$.assessmentId"
-        );
+                "2026-07-27T12:00:00"));
+        final String assessmentId = JsonPath.read(created.getResponse().getContentAsString(), "$.assessmentId");
 
         mockMvc.perform(get("/api/v1/fraud-assessments/{assessmentId}", assessmentId))
                 .andExpect(status().isOk())
@@ -554,26 +527,16 @@ class FraudRuleEngineApiTest {
 
     @Test
     void missingAssessmentsReturnStructuredNotFoundResponses() throws Exception {
-        mockMvc.perform(get(
-                        "/api/v1/fraud-assessments/{assessmentId}",
-                        "00000000-0000-0000-0000-000000000001"
-                ))
+        mockMvc.perform(get("/api/v1/fraud-assessments/{assessmentId}", "00000000-0000-0000-0000-000000000001"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("ASSESSMENT_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value(
-                        "Fraud assessment '00000000-0000-0000-0000-000000000001' was not found."
-                ))
+                .andExpect(jsonPath("$.message").value("Fraud assessment '00000000-0000-0000-0000-000000000001' was not found."))
                 .andExpect(jsonPath("$.timestamp").exists());
 
-        mockMvc.perform(get(
-                        "/api/v1/fraud-assessments/transaction/{transactionId}",
-                        "txn-missing"
-                ))
+        mockMvc.perform(get("/api/v1/fraud-assessments/transaction/{transactionId}", "txn-missing"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("ASSESSMENT_NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value(
-                        "No fraud assessment was found for transaction 'txn-missing'."
-                ))
+                .andExpect(jsonPath("$.message").value("No fraud assessment was found for transaction 'txn-missing'."))
                 .andExpect(jsonPath("$.timestamp").exists());
     }
 
@@ -585,8 +548,7 @@ class FraudRuleEngineApiTest {
                 "cust-a",
                 "100.00",
                 "GROCERIES",
-                "2026-07-27T12:00:00"
-        ));
+                "2026-07-27T12:00:00"));
         clock.advance(Duration.ofMinutes(1));
 
         createAssessment(sampleTransaction(
@@ -595,8 +557,7 @@ class FraudRuleEngineApiTest {
                 "cust-b",
                 "25000.00",
                 "ELECTRONICS",
-                "2026-07-27T12:00:00"
-        ));
+                "2026-07-27T12:00:00"));
         clock.advance(Duration.ofMinutes(1));
 
         createAssessment(sampleTransaction(
@@ -605,25 +566,21 @@ class FraudRuleEngineApiTest {
                 "cust-a",
                 "25000.00",
                 "ELECTRONICS",
-                "2026-07-27T02:15:00"
-        ));
+                "2026-07-27T02:15:00"));
 
-        mockMvc.perform(get("/api/v1/fraud-assessments")
-                        .queryParam("customerId", "cust-a"))
+        mockMvc.perform(get("/api/v1/fraud-assessments").queryParam("customerId", "cust-a"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content[0].transactionId").value("txn-high"))
                 .andExpect(jsonPath("$.content[1].transactionId").value("txn-low"));
 
-        mockMvc.perform(get("/api/v1/fraud-assessments")
-                        .queryParam("riskLevel", "MEDIUM"))
+        mockMvc.perform(get("/api/v1/fraud-assessments").queryParam("riskLevel", "MEDIUM"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].transactionId").value("txn-medium"))
                 .andExpect(jsonPath("$.content[0].riskLevel").value("MEDIUM"));
 
-        mockMvc.perform(get("/api/v1/fraud-assessments")
-                        .queryParam("flagged", "true"))
+        mockMvc.perform(get("/api/v1/fraud-assessments").queryParam("flagged", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].transactionId").value("txn-high"))
