@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "management.server.port=8080",
         "springdoc.api-docs.enabled=true",
         "springdoc.swagger-ui.enabled=true",
+        "fraud.rate-limit.enabled=false",
         "fraud.security.enabled=true",
         "fraud.security.provider=local",
         "fraud.security.issuer-uri=http://localhost:8080",

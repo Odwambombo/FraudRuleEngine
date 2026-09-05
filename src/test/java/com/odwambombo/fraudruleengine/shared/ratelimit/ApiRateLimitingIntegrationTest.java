@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 + "jdbc:h2:mem:fraud_rule_engine_rate_limit;"
                 + "MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH",
         "fraud.security.enabled=false",
+        "fraud.rate-limit.enabled=true",
         "fraud.rate-limit.api.requests-per-minute=2",
         "fraud.rate-limit.api.requests-per-second=2"
 })
