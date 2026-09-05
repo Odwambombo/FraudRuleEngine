@@ -261,6 +261,7 @@ It creates:
 - an encrypted ECR repository with immutable tags, scan-on-push, and retention;
 - a REGIONAL WAF web ACL associated with the supplied ALB;
 - a per-IP rate-based blocking rule;
+- per-principal application token buckets for defense in depth inside each JVM;
 - AWS managed Common and Known Bad Inputs rule groups;
 - WAF logs with authorization and cookie header redaction;
 - an SNS alarm topic; and
@@ -283,7 +284,10 @@ events before paging an on-call engineer.
 
 Start managed WAF rules in count mode in staging, inspect legitimate requests,
 then enforce the rules. Treat the example rate and alarm thresholds as starting
-points that must be calibrated with representative traffic.
+points that must be calibrated with representative traffic. The application
+rate limiter is local to each ECS task, so it does not replace WAF's shared
+perimeter enforcement; configure `FRAUD_API_RATE_LIMIT_PER_MINUTE`,
+`FRAUD_API_RATE_LIMIT_PER_SECOND`, and the WAF window together.
 
 See [`infra/terraform/README.md`](../infra/terraform/README.md) for variables,
 staging and production examples, encryption notes, and outputs.

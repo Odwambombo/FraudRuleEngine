@@ -82,6 +82,11 @@ public class TransactionEventController {
                     responseCode = "503",
                     description = "Transient transaction-processing retries were exhausted.",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The caller exceeded the configured API rate limit.",
+                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
             )
     })
     @PreAuthorize("@fraudAuthorizationPolicy.hasPermissionAndGrantingRole(authentication, "

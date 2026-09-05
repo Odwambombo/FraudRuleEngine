@@ -78,6 +78,11 @@ public class FraudAssessmentController {
                     responseCode = "404",
                     description = "No assessment exists with the supplied ID.",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The caller exceeded the configured API rate limit.",
+                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
             )
     })
     @PreAuthorize("@fraudAuthorizationPolicy.hasPermissionAndGrantingRole(authentication, "
@@ -118,6 +123,11 @@ public class FraudAssessmentController {
                     responseCode = "404",
                     description = "No assessment exists for the supplied transaction ID.",
                     content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The caller exceeded the configured API rate limit.",
+                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
             )
     })
     @PreAuthorize("@fraudAuthorizationPolicy.hasPermissionAndGrantingRole(authentication, "
@@ -157,6 +167,11 @@ public class FraudAssessmentController {
             @ApiResponse(
                     responseCode = "403",
                     description = "ASSESSMENT_READ and a granting role are required."
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The caller exceeded the configured API rate limit.",
+                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
             )
     })
     @PreAuthorize("@fraudAuthorizationPolicy.hasPermissionAndGrantingRole(authentication, "

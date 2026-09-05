@@ -377,6 +377,35 @@ receives no fraud role until an administrator assigns a Cognito group. See
 [`docs/aws-production-readiness.md`](docs/aws-production-readiness.md) for the
 exact roles, callbacks, and environment settings.
 
+### Application rate limiting
+
+The application applies two token-bucket limits to `/api/v1/**` requests. The
+general API policy allows 1,200 requests per minute with a 100-request-per-second
+burst limit. The local login endpoint has an independent limit of 10 requests
+per minute and 3 per second. Authenticated API callers are keyed by principal;
+anonymous callers and login attempts are keyed by the client address resolved by
+the servlet container. CORS preflight requests and non-API surfaces such as
+`/livez`, `/readyz`, Actuator, static assets, and Swagger are not limited.
+
+Rejected requests return `429 Too Many Requests`, `Retry-After`,
+`X-RateLimit-Limit`, and `X-RateLimit-Remaining`, with the normal structured API
+error body. Tune or disable the defaults with:
+
+| Setting | Default |
+| --- | --- |
+| `FRAUD_RATE_LIMIT_ENABLED` | `true` |
+| `FRAUD_API_RATE_LIMIT_PER_MINUTE` | `1200` |
+| `FRAUD_API_RATE_LIMIT_PER_SECOND` | `100` |
+| `FRAUD_LOGIN_RATE_LIMIT_PER_MINUTE` | `10` |
+| `FRAUD_LOGIN_RATE_LIMIT_PER_SECOND` | `3` |
+| `FRAUD_RATE_LIMIT_MAX_CLIENT_BUCKETS` | `100000` |
+| `FRAUD_RATE_LIMIT_CLIENT_IDLE_TIME` | `10m` |
+
+Buckets are bounded and expire after inactivity, but they are local to one JVM.
+In a multi-task deployment, retain the existing WAF rate rule as the shared
+perimeter control and treat the application limiter as defense in depth. Tune
+both layers with representative traffic before production rollout.
+
 ### Test browser authentication locally
 
 The default Compose run shows the local username/password login and issues a
@@ -469,6 +498,7 @@ matched identically in Loki and CloudWatch Logs:
 | Unhandled application exception | `APPLICATION_EXCEPTION` | `application_exceptions_unhandled_total` |
 | Fraud-processing failure | `FRAUD_PROCESSING_FAILURE` | `fraud_transactions_processing_failures_total` |
 | Authentication failure | `AUTHENTICATION_FAILURE` | `security_authentication_failures_total` |
+| API rate-limit rejection | `API rate limit exceeded` | `fraud_api_rate_limit_rejected_total` |
 
 The alert records include a failure-type value, usually an exception's simple
 class name, but never exception messages, usernames, request paths, transaction

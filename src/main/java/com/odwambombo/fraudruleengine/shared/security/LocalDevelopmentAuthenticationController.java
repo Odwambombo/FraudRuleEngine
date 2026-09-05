@@ -82,6 +82,11 @@ class LocalDevelopmentAuthenticationController {
                     responseCode = "401",
                     description = "The supplied credentials are invalid.",
                     content = @Content(schema = @Schema(implementation = LoginError.class))
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The client exceeded the local login rate limit.",
+                    content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
             )
     })
     ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {

@@ -1,9 +1,11 @@
 package com.odwambombo.fraudruleengine.shared.security;
 
+import com.odwambombo.fraudruleengine.shared.exception.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
@@ -51,13 +53,24 @@ public class FrontendSecurityConfigurationController {
             description = "Public, non-cacheable bootstrap configuration for the web console. "
                     + "It contains provider identifiers and authorization requirements, never secrets."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "The current non-secret frontend configuration.",
-            content = @Content(
-                    schema = @Schema(implementation = FrontendSecurityConfigurationResponse.class)
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The current non-secret frontend configuration.",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = FrontendSecurityConfigurationResponse.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "The client exceeded the configured API rate limit.",
+                    content = @Content(
+                            schema = @Schema(implementation = ApiErrorResponse.class)
+                    )
             )
-    )
+    })
     public ResponseEntity<FrontendSecurityConfigurationResponse> getFrontendSecurityConfiguration() {
         final String clientId = StringUtils.hasText(frontendProperties.getClientId())
                 ? frontendProperties.getClientId().trim()

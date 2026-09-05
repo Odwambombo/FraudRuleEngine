@@ -118,8 +118,14 @@ class LocalDevelopmentAuthenticationIntegrationTest {
                         "$.paths['/api/v1/transaction-events'].post.security[0].bearerAuth"
                 ).isArray())
                 .andExpect(jsonPath(
+                        "$.paths['/api/v1/transaction-events'].post.responses['429']"
+                ).exists())
+                .andExpect(jsonPath(
                         "$.paths['/api/v1/frontend-config'].get.security"
-                ).doesNotExist());
+                ).doesNotExist())
+                .andExpect(jsonPath(
+                        "$.paths['/api/v1/frontend-config'].get.responses['429']"
+                ).exists());
 
         mockMvc.perform(get("/swagger-ui.html"))
                 .andExpect(status().is3xxRedirection());
